@@ -1,8 +1,15 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {Form, Input, Modal, Button, Checkbox} from 'antd';
+import Router from 'next/router';
+import {useDispatch, useSelector} from 'react-redux';
+import { SIGN_UP_REQUEST } from '../reducers/user';
 
 
 function SignupForm(){
+
+    const dispatch = useDispatch();
+    const {isSigningUp, me} = useSelector(state => state.user);
+     
     const [id, setId] = useState('');
     const [nickname, setNickname] = useState('');
     const [password, setPassword] = useState('');
@@ -18,8 +25,23 @@ function SignupForm(){
 
     const onSubmit = useCallback( (e) => {
         e.preventDefault();
-        if(password !== passwordCheck) return alert("비밀번호가 일치 하지 않습니다.")
-    },[]);
+        if(!id || !nickname || !password || !passwordCheck) return alert('회원폼을 확인해 주세요.');
+        if(password !== passwordCheck) return alert("비밀번호가 일치 하지 않습니다.");
+        if(!term) return alert('약관에 동의 하셔야 합니다.');
+        dispatch({
+            type:SIGN_UP_REQUEST,
+            data:{
+                userId:id, nickname, password
+            }
+        });
+    },[password, passwordCheck, id, nickname, term]);
+
+    useEffect(() => {
+        if(me && me.id !== undefined){
+            alert('로그인 되어 있습니다.')
+            Router.push('/')
+        }
+    },[me && me.id])
 
 
     return(
@@ -43,7 +65,7 @@ function SignupForm(){
             <div style={{float:'right'}}>
                 <Checkbox  style={{marginBottom:'30px'}} name="user-term" value={term} checked={term} onChange={onChangeTerm}/>동의하기
             </div>
-            <Button style={{width:'100%'}} type="primary" htmlType="submit">회원가입</Button>
+            <Button style={{width:'100%'}} type="primary" htmlType="submit" loading={isSigningUp}>회원가입</Button>
       </Form>
     )
 }
