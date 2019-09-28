@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 
-
-router.get('/', async (req, res, next) => {
+router.get('/:tag', async(req, res, next) => {
   try {
     const posts = await db.Post.findAll({
       include:[{
+        model:db.Hashtag,
+        where:{
+          name:decodeURIComponent(req.params.tag)
+        }
+      },{
         model:db.User,
         attributes:['id','nickname']
       },{
@@ -23,7 +27,7 @@ router.get('/', async (req, res, next) => {
           model:db.User,
           attributes:['id','nickname']
         },{
-          model:db.Image
+          model:db.Image,
         }]
       }],
       order:[['createdAt','DESC']]
@@ -35,4 +39,4 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-module.exports = router;
+module.exports = router

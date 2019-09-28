@@ -8,6 +8,7 @@ const passport = require('passport');
 
 const userAPIRouter = require('./routes/user');
 const postAPIRouter = require('./routes/post');
+const hashtagAPIRouter = require('./routes/hashtag');
 const postsAPIRouter = require('./routes/posts');
 const passportConfig = require('./passport');
 const db = require('./models');
@@ -22,7 +23,8 @@ app.use(cors({
     origin:true,
     credentials:true,
 }));
-app.use(morgan("dev"))
+app.use(morgan("dev"));
+app.use('/',express.static('uploads'));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -41,6 +43,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api/user/', userAPIRouter);
+app.use('/api/hashtag/', hashtagAPIRouter);
 app.use('/api/post/', postAPIRouter);
 app.use('/api/posts/', postsAPIRouter);
 

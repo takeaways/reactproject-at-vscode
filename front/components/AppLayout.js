@@ -32,7 +32,7 @@ function AppLayout({children}){
                 </Menu.Item>
             </Menu>
             <Row>
-                <Col style={{padding:'12px 30px'}} xs={24} md={6}>{ me && me.id !== undefined ? <Profile/> : <LoginForm/> }</Col>
+                <Col style={{padding:'12px 0'}} xs={24} md={6}>{ me && me.id !== undefined ? <Profile/> : <LoginForm/> }</Col>
                 <Col style={{padding:'12px 30px'}} xs={24} md={13}>{children}</Col>
                 <Col style={{padding:'12px 30px'}} xs={24} md={5} >
                     <div style={{bottom:0}}>Made By Geonil Jang</div>

@@ -100,5 +100,12 @@
 <pre>
 <code>
   핵심의 getInitialProps !!!
+  ___
 </code>
 </pre>
+
+`dd`
+```javascript
+asxasx
+console.log("Gwllo wold")
+```

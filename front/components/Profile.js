@@ -20,8 +20,7 @@ function Profile(){
 
     return(
         <Card
-            style={{border:'2px solid #1890ff'}}
-            actions={[
+          actions={[
                 <div key="post">개시물<br/>{me.Posts.length || 0 }</div>,
                 <div key="following">팔로잉<br/>{me.Followings.length || 0 }</div>,
                 <div key="follower">팔로워<br/>{me.Followers.length || 0 }</div>,
