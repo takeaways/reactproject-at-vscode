@@ -45,7 +45,9 @@ function PostForm(){
     },[text, imagePaths]);
 
     useEffect(()=>{
-        if(postAdded) setText('');
+        if(postAdded) {
+          setText('');
+        }
     },[postAdded === true]);
 
     return(

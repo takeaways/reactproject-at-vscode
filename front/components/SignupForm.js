@@ -8,8 +8,8 @@ import { SIGN_UP_REQUEST } from '../reducers/user';
 function SignupForm(){
 
     const dispatch = useDispatch();
-    const {isSigningUp, me} = useSelector(state => state.user);
-     
+    const {isSigningUp, me, signedUp} = useSelector(state => state.user);
+
     const [id, setId] = useState('');
     const [nickname, setNickname] = useState('');
     const [password, setPassword] = useState('');
@@ -37,11 +37,15 @@ function SignupForm(){
     },[password, passwordCheck, id, nickname, term]);
 
     useEffect(() => {
-        if(me && me.id !== undefined){
-            alert('로그인 되어 있습니다.')
+        if(signedUp){
+            alert('회원가입 되었습니다.')
             Router.push('/')
         }
-    },[me && me.id])
+    },[signedUp === true]);
+
+    if(me){
+      return null
+    }
 
 
     return(

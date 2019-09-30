@@ -29,10 +29,9 @@ function* login(action){
             data:result.data
         })
     }catch(e){
-        console
         yield put({
             type:LOG_IN_FAILURE,
-            error:e
+            error:e.response.data && e.response.data
         })
     }
 }
@@ -161,8 +160,8 @@ function* unFollowUser(action){
         })
     }
 }
-function unFollowUserAPI(userId){
-    return axios.delete(`/user/${userId}/follow`, {
+function unFollowUserAPI(userId ){
+    return axios.delete(`/user/${userId || 0}/follow`, {
         withCredentials:true,
     });
 }
@@ -173,7 +172,7 @@ function* watchLoadFollowers(){
 }
 function* loadFollowers(action){
     try{
-        const result = yield call(loadFollowersAPU, action.data);
+        const result = yield call(loadFollowersAPU, action.data, action.offset);
         yield put({
             type:LOAD_FOLLOWERS_SUCCESS,
             data:result.data,
@@ -186,8 +185,8 @@ function* loadFollowers(action){
         })
     }
 }
-function loadFollowersAPU(userId){
-    return axios.get(`/user/${userId}/followers`, {
+function loadFollowersAPU(userId, offset = 0, limit = 3){
+    return axios.get(`/user/${userId || 0}/followers?offset=${offset}&limit=${limit}`, {
         withCredentials:true,
     });
 }
@@ -198,7 +197,7 @@ function* watchLoadFollowings(){
 }
 function* loadFollwings(action){
     try{
-        const result = yield call(loadFollowings, action.data);
+        const result = yield call(loadFollowings, action.data, action.offset);
         yield put({
             type:LOAD_FOLLOWINGS_SUCCESS,
             data:result.data,
@@ -211,8 +210,8 @@ function* loadFollwings(action){
         })
     }
 }
-function loadFollowings(userId){
-    return axios.get(`/user/${userId}/followings`, {
+function loadFollowings(userId, offset = 0, limit =3){
+    return axios.get(`/user/${userId || 0}/followings?offset=${offset}&limit=${limit}`, {
         withCredentials:true,
     });
 }
@@ -237,7 +236,7 @@ function* removeFollowers(action){
     }
 }
 function removeFollowersAPI(userId){
-    return axios.delete(`/user/${userId}/follower`, {
+    return axios.delete(`/user/${userId || 0}/follower`, {
         withCredentials:true,
     });
 }

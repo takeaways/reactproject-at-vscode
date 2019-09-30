@@ -114,6 +114,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSigningUp:true,
+                signedUp:false,
                 signUpErrorReason:'',
             }
         }
@@ -121,21 +122,22 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSigningUp:false,
-                me:action.data
+                me:null,
+                signedUp:true
             }
         }
         case SIGN_UP_FAILURE:{
             return {
                 ...state,
                 isSigningUp:false,
-
+                signedUp:false,
             }
         }
         case LOAD_USER_REQUEST:{
             return {
                 ...state,
-                me:null,
                 userInfo:null,
+                signedUp:false,
             }
         }
         case LOAD_USER_SUCCESS:{
@@ -206,15 +208,27 @@ const reducer = (state = initialState, action) => {
             }
           }
         }
+        case REMOVE_POST_OF_ME:{
+          return{
+            ...state,
+            me:{
+              ...state.me,
+              Posts:state.me.Posts.filter(v=>v.id !== action.data),
+            }
+          }
+        }
         case LOAD_FOLLOWERS_REQUEST:{
             return {
                 ...state,
+                followerList:!action.offset ? [] : state.followerList,
+                hasMoreFollower:action.offset ? state.hasMoreFollower : true,
             }
         }
         case LOAD_FOLLOWERS_SUCCESS:{
             return {
                 ...state,
-                followerList:action.data
+                followerList:state.followerList.concat(action.data),
+                hasMoreFollower:action.data.length === 3,
             }
 
         }
@@ -226,12 +240,15 @@ const reducer = (state = initialState, action) => {
         case LOAD_FOLLOWINGS_REQUEST:{
             return {
                 ...state,
+                followingList:!action.offset ? [] : state.followingList,
+                hasMoreFollowing:action.offset ? state.hasMoreFollowing : true,
             }
         }
         case LOAD_FOLLOWINGS_SUCCESS:{
             return {
                 ...state,
-                followingList:action.data
+                followingList:state.followingList.concat(action.data),
+                hasMoreFollowing:action.data.length === 3,
             }
 
         }

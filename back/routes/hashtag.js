@@ -4,7 +4,16 @@ const db = require('../models');
 
 router.get('/:tag', async(req, res, next) => {
   try {
+    let where = {}
+    if(parseInt(req.query.lastId)){
+      where ={
+        id:{
+          [db.Sequelize.Op.lt]:req.query.lastId
+        }
+      }
+    }
     const posts = await db.Post.findAll({
+      where,
       include:[{
         model:db.Hashtag,
         where:{
@@ -30,7 +39,8 @@ router.get('/:tag', async(req, res, next) => {
           model:db.Image,
         }]
       }],
-      order:[['createdAt','DESC']]
+      order:[['createdAt','DESC']],
+      limit:parseInt(req.query.limit)
     });
     res.json(posts);
   } catch (e) {

@@ -1,5 +1,6 @@
 const express = require('express');
 const next = require('next');
+const path = require('path');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const expressSession = require('express-session');
@@ -16,6 +17,7 @@ const serverHandler = ()=>{
   const server = express();
   server.use(morgan('dev'));
   server.use(express.json());
+  server.use('/',express.static(path.join(__dirname,'public')))
   server.use(express.urlencoded({extended:true}));
   server.use(cookieParser(process.env.COOKIE_SECRET));
   server.use(expressSession({
@@ -36,6 +38,11 @@ const serverHandler = ()=>{
   server.get(`/user/:id`,(req, res, next) => {
     const id = req.params.id;
     app.render(req, res, '/user',{id})
+  });
+
+  server.get(`/post/:id`,(req, res, next) => {
+    const id = req.params.id;
+    app.render(req, res, '/post', {id})
   });
 
   server.get('*', (req,res) => {

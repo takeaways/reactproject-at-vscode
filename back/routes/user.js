@@ -133,7 +133,7 @@ router.get('/:id/posts', async (req, res, next) => {
   try {
     const posts = await db.Post.findAll({
       where:{
-        userId:parseInt(req.params.id),
+        UserId:parseInt(req.params.id) || (req.user && req.user.id) || 0,
         RetweetId:null,
       },
       include:[{
@@ -158,8 +158,14 @@ router.get('/:id/posts', async (req, res, next) => {
 
 router.get('/:id/followers', isLoggedIn, async (req, res, next) => {
   try {
-    const user = await db.User.findOne({where:{id:parseInt(req.params.id)}});
-    const followers = await user.getFollowers({attributes:['id','nickname']});
+    const user = await db.User.findOne({
+      where:{id:parseInt(req.params.id)  || (req.user && req.user.id) || 0},
+    });
+    const followers = await user.getFollowers({
+      attributes:['id','nickname'],
+      limit:parseInt(req.query.limit),
+      offset:parseInt(req.query.offset),
+    });
     res.json(followers);
   } catch (e) {
       console.error(e);
@@ -169,8 +175,14 @@ router.get('/:id/followers', isLoggedIn, async (req, res, next) => {
 
 router.get('/:id/followings', isLoggedIn, async (req, res, next) => {
   try {
-    const user = await db.User.findOne({where:{id:parseInt(req.params.id)}});
-    const followings = await user.getFollowings({attributes:['id','nickname']});
+    const user = await db.User.findOne({
+      where:{id:parseInt(req.params.id)  || (req.user && req.user.id) || 0 },
+    });
+    const followings = await user.getFollowings({
+      attributes:['id','nickname'],
+      limit:parseInt(req.query.limit),
+      offset:parseInt(req.query.offset),
+    });
     res.json(followings)
   } catch (e) {
       console.error(e);
@@ -180,7 +192,7 @@ router.get('/:id/followings', isLoggedIn, async (req, res, next) => {
 
 router.delete('/:id/follower', isLoggedIn, async (req, res, next) => {
   try {
-    const me = await db.User.findOne({where:{id:parseInt(req.user.id)}});
+    const me = await db.User.findOne({where:{id:parseInt(req.user.id)  || (req.user && req.user.id) || 0}});
     await me.removeFollowers(req.params.id);
     res.send(req.params.id);
   } catch (e) {

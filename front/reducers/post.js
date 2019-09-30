@@ -82,6 +82,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 isAddingPost:false,
                 postAdded:true,
+                imagePaths:[],
                 mainPosts:[action.data, ...state.mainPosts]
             }
         }
@@ -96,13 +97,15 @@ const reducer = (state = initialState, action) => {
         case LOAD_MAIN_POSTS_REQUEST:{
             return {
                 ...state,
-                mainPosts:[]
+                mainPosts:action.lastId === 0 ? [] : state.mainPosts,
+                hasMorePost: action.lastId ? state.hasMorePost : true,
             }
         }
         case LOAD_MAIN_POSTS_SUCCESS:{
             return {
                 ...state,
-                mainPosts:action.data
+                mainPosts:state.mainPosts.concat(action.data),
+                hasMorePost:action.data.length === 10,
             }
         }
         case LOAD_MAIN_POSTS_FAILURE:{
@@ -279,6 +282,28 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
             }
+        }
+        case REMOVE_POST_REQUEST:{
+            return {
+                ...state,
+            }
+        }
+        case REMOVE_POST_SUCCESS:{
+            return {
+                ...state,
+                mainPosts:state.mainPosts.filter(v=>v.id !== action.data),
+            }
+        }
+        case REMOVE_POST_FAILURE:{
+            return {
+                ...state,
+            }
+        }
+        case LOAD_POST_SUCCESS:{
+          return {
+            ...state,
+            singlePost: action.data
+          }
         }
         default:{
             return {
